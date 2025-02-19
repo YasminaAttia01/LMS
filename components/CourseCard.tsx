@@ -3,6 +3,15 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import { Loader } from './Loader'
+import {BookOpen} from 'lucide-react'
+import { GetCoursesQueryResult } from '@/sanity.types'
+import { CourseProgress } from './CourseProgress'
+
+interface CourseCardProps {
+    course: GetCoursesQueryResult[number];
+    progress?: number;
+    href: string;
+}
 
 const CourseCard = ({course , progress,href}: CourseCardProps) => {
   return (
@@ -12,7 +21,7 @@ const CourseCard = ({course , progress,href}: CourseCardProps) => {
     className='group hover:no-underline flex'>
         <div className='relative h-52 w-full overflow-hidden shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:translate-y-[-4px]border border-border flex flex-col flex-1'>
             <div className='relative h-52 w-full overflow-hidden'>
-                {course.image ?(
+                {course.image?(
                     <Image
                     src={urlFor(course.image).url()||""}
                     alt={course.title || "Course Image"}
@@ -40,6 +49,57 @@ const CourseCard = ({course , progress,href}: CourseCardProps) => {
                                     })}`}
 
                         </span>
+                    )}
+
+                </div>
+
+            </div>
+            <div className='p-6 flex flex-col flex-1'>
+                <h3 className='text-xl font-bold mb-2 group-hover:text-primary transition-colors duration-300'>
+                    {course.title}
+                </h3>
+                <p className='text-muted-foreground mb-4 line-clamp-2 flex-1'>
+                    {course.description}
+                </p>
+                <div className='space-y-4 mt-auto'>
+
+                </div>
+                <div className='space-y-4 mt-auto'>
+                    {course.instructor && (
+                        <div className='flex items-center justify-between'>
+                            <div className='flex items-center'>
+                                {course.instructor.photo ? (
+                                    <div className='relative h-8 w-8 mr-2'>
+                                        <Image
+                                        src={urlFor(course.instructor.photo).url() || ""}
+                                        alt={course.instructor.name || 'Instructor'}
+                                        fill
+                                        className='rounded-full object-cover'
+                                        />
+
+                                       
+
+                                    </div>
+                                ):(
+                                    <div className='h-8 w-8 mr-2 rounded-full bg-muted flex items-cneter justify-center'>
+                                        <Loader size="sm"/>
+                                    </div>
+                                )}
+                                <span className='text-sm text-muted-foreground'>
+                                    by {course.instructor.name}
+                                </span>
+
+                            </div>
+                            <BookOpen className="h-4 w-4 text-muted-foreground"/>
+
+                        </div>
+                    )}
+                    {typeof progress === "number" &&(
+                        <CourseProgress
+                        progress={progress}
+                        variant="default"
+                        size="sm"
+                        label="Course Progress"/>
                     )}
 
                 </div>
